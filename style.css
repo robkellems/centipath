@@ -1,11 +1,15 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     height: 100vh;
     margin: 0;
     background-color: #d6e6e9;
+}
+h1, h4 {
+    color: #0095b0;
 }
 .grid {
     display: grid;
