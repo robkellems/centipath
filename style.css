@@ -30,8 +30,11 @@ body {
     user-select: none;
 }
 .square.filled {
-    background-color: #ee2e31;
+    background-color: #ab0003;
     color: white;
+}
+.square.filled.current {
+    background-color: #ee2e31;
 }
 .square.highlight {
     background-color: #e2a2a4;

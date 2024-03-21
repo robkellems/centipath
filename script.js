@@ -1,6 +1,7 @@
 const grid = document.querySelector('.grid');
 const message = document.querySelector('.message');
 let currentNumber = 2;
+let currentSquare;
 let gameOver = false;
 
 function createGrid() {
@@ -17,6 +18,8 @@ function placeNumber1() {
     const square = grid.children[randomIndex];
     square.textContent = '1';
     square.classList.add('filled');
+    square.classList.add('current');
+    currentSquare = square;
 }
 
 function highlightValidMoves(index) {
@@ -51,8 +54,11 @@ function handleClick(e) {
     if (!gameOver && e.target.classList.contains('highlight')) {
         e.target.textContent = currentNumber;
         e.target.classList.add('filled');
+        e.target.classList.add('current');
         e.target.classList.remove('highlight');
         document.querySelectorAll('.highlight').forEach(square => square.classList.remove('highlight'));
+        currentSquare.classList.remove('current');
+        currentSquare = e.target;
         currentNumber++;
 
         if (currentNumber > 100) {
@@ -61,7 +67,7 @@ function handleClick(e) {
         } else {
             highlightValidMoves(e.target.dataset.index);
             if (document.querySelectorAll('.highlight').length === 0) {
-                message.textContent = 'Game Over!\nYour score: ' + (currentNumber -1);
+                message.textContent = 'Game Over! Your score: ' + (currentNumber -1);
                 gameOver = true;
             }
         }
