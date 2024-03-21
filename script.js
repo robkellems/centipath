@@ -17,8 +17,7 @@ function placeNumber1() {
     const randomIndex = Math.floor(Math.random() * 100);
     const square = grid.children[randomIndex];
     square.textContent = '1';
-    square.classList.add('filled');
-    square.classList.add('current');
+    square.classList.add('filled', 'current');
     currentSquare = square;
 }
 
@@ -52,11 +51,13 @@ function highlightValidMoves(index) {
 
 function handleClick(e) {
     if (!gameOver && e.target.classList.contains('highlight')) {
+        // Set parameters for new clicked square
         e.target.textContent = currentNumber;
-        e.target.classList.add('filled');
-        e.target.classList.add('current');
+        e.target.classList.add('filled', 'current', 'animate');
         e.target.classList.remove('highlight');
         document.querySelectorAll('.highlight').forEach(square => square.classList.remove('highlight'));
+        
+        // Change previously clicked square, reset variables for new square
         currentSquare.classList.remove('current');
         currentSquare = e.target;
         currentNumber++;
