@@ -1,10 +1,13 @@
 const grid = document.querySelector('.grid');
+const timer = document.getElementById('timer');
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modal-message');
 const modalButton = document.getElementById('modal-button');
 const keypadMap = new Map([[8,-30],[9,-18],[6,3],[3,22],[2,30],[1,18],[4,-3],[7,-22]]);
 let currentNumber = 2;
 let currentSquare;
+let startTime;
+let timerInterval;
 let gameOver = false;
 
 function createGrid() {
@@ -22,6 +25,25 @@ function placeNumber1() {
     square.textContent = '1';
     square.classList.add('filled', 'current');
     currentSquare = square;
+}
+
+function formatTime(time) {
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    const milliseconds = Math.floor((time % 1000) / 10);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds + "." + (milliseconds < 10 ? '0' : '') + milliseconds;
+}
+
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+        const elapsedTime = Date.now() - startTime;
+        timer.textContent = 'Time: ' + formatTime(elapsedTime);
+    }, 10);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
 }
 
 function highlightValidMoves(index) {
@@ -62,12 +84,16 @@ function registerMove(index) {
         moveSquare.classList.remove('highlight');
         document.querySelectorAll('.highlight').forEach(square => square.classList.remove('highlight'));
 
+        // Start timer if first move
+        if (currentNumber === 2) startTimer();
+
         // Change previously clicked square, reset variables for new square
         currentSquare.classList.remove('current');
         currentSquare = moveSquare;
         currentNumber++;
 
         if (currentNumber > 100) {
+            stopTimer();
             const winningSound = new Audio("resources/crowdcheer.ogg");
             winningSound.play();
             modalMessage.innerHTML = "<b>Congratulations! You filled the grid!</b>";
@@ -77,6 +103,7 @@ function registerMove(index) {
         else {
             highlightValidMoves(moveSquare.dataset.index);
             if (document.querySelectorAll('.highlight').length === 0) {
+                stopTimer();
                 const gameOverSound = new Audio("resources/EMEXTR4.wav");
                 gameOverSound.play();
                 let scoreStr = (currentNumber - 1).toString();
