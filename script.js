@@ -49,37 +49,42 @@ function highlightValidMoves(index) {
     });
 }
 
+function registerMove(index) {
+    let moveSquare = grid.children[index];
+    // Set attributes for new clicked square
+    moveSquare.textContent = currentNumber;
+    moveSquare.classList.add('filled', 'current', 'animate');
+    moveSquare.classList.remove('highlight');
+    document.querySelectorAll('.highlight').forEach(square => square.classList.remove('highlight'));
+
+    // Change previously clicked square, reset variables for new square
+    currentSquare.classList.remove('current');
+    currentSquare = moveSquare;
+    currentNumber++;
+
+    if (currentNumber > 100) {
+        const winningSound = new Audio("resources/crowdcheer.ogg");
+        winningSound.play();
+        message.textContent = 'Congratulations! You won!';
+        gameOver = true;
+    } else {
+        highlightValidMoves(moveSquare.dataset.index);
+        if (document.querySelectorAll('.highlight').length === 0) {
+            const gameOverSound = new Audio("resources/EMEXTR4.wav");
+            gameOverSound.play();
+            message.textContent = 'Game Over! Your score: ' + (currentNumber - 1);
+            gameOver = true;
+        }
+        else {
+            const clickSound = new Audio("resources/EMCLK13.wav");
+            clickSound.play();
+        }
+    }
+}
+
 function handleClick(e) {
     if (!gameOver && e.target.classList.contains('highlight')) {
-        // Set parameters for new clicked square
-        e.target.textContent = currentNumber;
-        e.target.classList.add('filled', 'current', 'animate');
-        e.target.classList.remove('highlight');
-        document.querySelectorAll('.highlight').forEach(square => square.classList.remove('highlight'));
-        
-        // Change previously clicked square, reset variables for new square
-        currentSquare.classList.remove('current');
-        currentSquare = e.target;
-        currentNumber++;
-
-        if (currentNumber > 100) {
-            const winningSound = new Audio("resources/crowdcheer.ogg");
-            winningSound.play();
-            message.textContent = 'Congratulations! You won!';
-            gameOver = true;
-        } else {
-            highlightValidMoves(e.target.dataset.index);
-            if (document.querySelectorAll('.highlight').length === 0) {
-                const gameOverSound = new Audio("resources/EMEXTR4.wav");
-                gameOverSound.play();
-                message.textContent = 'Game Over! Your score: ' + (currentNumber -1);
-                gameOver = true;
-            }
-            else {
-                const clickSound = new Audio("resources/EMCLK13.wav");
-                clickSound.play();
-            }
-        }
+        registerMove(e.target.dataset.index);
     }
 }
 
