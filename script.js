@@ -1,6 +1,5 @@
 const grid = document.querySelector('.grid');
 const message = document.querySelector('.message');
-const clickSound = new Audio("resources/EMCLK13.wav")
 let currentNumber = 2;
 let currentSquare;
 let gameOver = false;
@@ -64,15 +63,21 @@ function handleClick(e) {
         currentNumber++;
 
         if (currentNumber > 100) {
+            const winningSound = new Audio("resources/crowdcheer.ogg");
+            winningSound.play();
             message.textContent = 'Congratulations! You won!';
             gameOver = true;
         } else {
             highlightValidMoves(e.target.dataset.index);
-            clickSound.play();
-
             if (document.querySelectorAll('.highlight').length === 0) {
+                const gameOverSound = new Audio("resources/EMEXTR4.wav");
+                gameOverSound.play();
                 message.textContent = 'Game Over! Your score: ' + (currentNumber -1);
                 gameOver = true;
+            }
+            else {
+                const clickSound = new Audio("resources/EMCLK13.wav");
+                clickSound.play();
             }
         }
     }
