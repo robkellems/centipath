@@ -1,5 +1,6 @@
 const grid = document.querySelector('.grid');
 const message = document.querySelector('.message');
+const clickSound = new Audio("resources/EMCLK13.wav")
 let currentNumber = 2;
 let currentSquare;
 let gameOver = false;
@@ -67,6 +68,8 @@ function handleClick(e) {
             gameOver = true;
         } else {
             highlightValidMoves(e.target.dataset.index);
+            clickSound.play();
+
             if (document.querySelectorAll('.highlight').length === 0) {
                 message.textContent = 'Game Over! Your score: ' + (currentNumber -1);
                 gameOver = true;
