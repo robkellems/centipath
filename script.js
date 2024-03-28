@@ -1,5 +1,7 @@
 const grid = document.querySelector('.grid');
-const message = document.querySelector('.message');
+const modal = document.getElementById('modal');
+const modalMessage = document.getElementById('modal-message');
+const modalButton = document.getElementById('modal-button');
 const keypadMap = new Map([[8,-30],[9,-18],[6,3],[3,22],[2,30],[1,18],[4,-3],[7,-22]]);
 let currentNumber = 2;
 let currentSquare;
@@ -68,7 +70,8 @@ function registerMove(index) {
         if (currentNumber > 100) {
             const winningSound = new Audio("resources/crowdcheer.ogg");
             winningSound.play();
-            message.textContent = 'Congratulations! You won!';
+            modalMessage.innerHTML = "<b>Congratulations! You filled the grid!</b>";
+            modal.style.display = 'block';
             gameOver = true;
         } 
         else {
@@ -76,7 +79,9 @@ function registerMove(index) {
             if (document.querySelectorAll('.highlight').length === 0) {
                 const gameOverSound = new Audio("resources/EMEXTR4.wav");
                 gameOverSound.play();
-                message.textContent = 'Game Over! Your score: ' + (currentNumber - 1);
+                let scoreStr = (currentNumber - 1).toString();
+                modalMessage.innerHTML = "Game Over! Your score: " + "<b>" + scoreStr + "</b>";
+                modal.style.display = 'block';
                 gameOver = true;
             }
             else {
@@ -99,8 +104,13 @@ function handleKeyPress(e) {
     }
 }
 
+function handleModalButtonClick(e) {
+    location.reload();
+}
+
 createGrid();
 placeNumber1();
 highlightValidMoves(document.querySelector('.filled').dataset.index);
 grid.addEventListener('click', handleClick);
 this.addEventListener('keypress', handleKeyPress);
+modalButton.addEventListener('click', handleModalButtonClick);
