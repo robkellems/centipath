@@ -2,4 +2,6 @@
 
 This was inspired by my dad, who's played this game for several years on paper but could never find a digital version. I couldn't find one either, so here it is.
 
-### **[Click here to play!]([url](https://robkellems.github.io/centipath/))**
+
+
+### **[Click here to play!](https://robkellems.github.io/centipath/)**
