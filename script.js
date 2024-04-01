@@ -4,7 +4,7 @@ const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modal-message');
 const modalButton = document.getElementById('modal-button');
 const keypadMap = new Map([[8,-30],[9,-18],[6,3],[3,22],[2,30],[1,18],[4,-3],[7,-22]]);
-let currentNumber = 2;
+let currentNumber = 2; //asfhasfhasfhasf
 let currentSquare;
 let startTime;
 let timerInterval;
@@ -74,6 +74,25 @@ function highlightValidMoves(index) {
     });
 }
 
+function endGame(winOrLose) {
+    stopTimer();
+    let scoreStr = (currentNumber - 1).toString();
+    let timeStr = timer.textContent.substring(6); // remove "Time: " from the string
+    if (winOrLose === 1) {
+        const winningSound = new Audio("resources/crowdcheer.ogg");
+        winningSound.play();
+        modalMessage.innerHTML = "<b>Congratulations! You filled the grid!</b><br>Score: <b>" + scoreStr + "</b><br>Time: <b>" + timeStr + "</b>";
+    }
+    else {
+        const gameOverSound = new Audio("resources/EMEXTR4.wav");
+        gameOverSound.play();
+        modalMessage.innerHTML = "Game Over!<br>Score: <b>" + scoreStr + "</b><br>Time: <b>" + timeStr + "</b>";
+    }
+
+    modal.style.display = 'block';
+    gameOver = true;
+}
+
 function registerMove(index) {
     let moveSquare = grid.children[index];
 
@@ -92,25 +111,10 @@ function registerMove(index) {
         currentSquare = moveSquare;
         currentNumber++;
 
-        if (currentNumber > 100) {
-            stopTimer();
-            const winningSound = new Audio("resources/crowdcheer.ogg");
-            winningSound.play();
-            modalMessage.innerHTML = "<b>Congratulations! You filled the grid!</b>";
-            modal.style.display = 'block';
-            gameOver = true;
-        } 
+        if (currentNumber > 100) endGame(1);
         else {
             highlightValidMoves(moveSquare.dataset.index);
-            if (document.querySelectorAll('.highlight').length === 0) {
-                stopTimer();
-                const gameOverSound = new Audio("resources/EMEXTR4.wav");
-                gameOverSound.play();
-                let scoreStr = (currentNumber - 1).toString();
-                modalMessage.innerHTML = "Game Over! Your score: " + "<b>" + scoreStr + "</b>";
-                modal.style.display = 'block';
-                gameOver = true;
-            }
+            if (document.querySelectorAll('.highlight').length === 0) endGame(0);
             else {
                 const clickSound = new Audio("resources/EMCLK13.wav");
                 clickSound.play();
