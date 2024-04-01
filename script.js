@@ -2,9 +2,10 @@ const grid = document.querySelector('.grid');
 const timer = document.getElementById('timer');
 const modal = document.getElementById('modal');
 const modalMessage = document.getElementById('modal-message');
+const leaderboard = document.getElementById('leaderboard');
 const modalButton = document.getElementById('modal-button');
 const keypadMap = new Map([[8,-30],[9,-18],[6,3],[3,22],[2,30],[1,18],[4,-3],[7,-22]]);
-let currentNumber = 2; //asfhasfhasfhasf
+let currentNumber = 2;
 let currentSquare;
 let startTime;
 let timerInterval;
@@ -74,6 +75,66 @@ function highlightValidMoves(index) {
     });
 }
 
+function storeScore(score, time) {
+    let scores = localStorage.getItem('gameScores');
+    let times = localStorage.getItem('gameTimes');
+
+    if (scores && times) {
+        scores = JSON.parse(scores);
+        times = JSON.parse(times);
+    }
+    else {
+        scores = [];
+        times = [];
+    }
+
+    scores.push(score);
+    times.push(time);
+    const sortedIndices = scores.map((score, index) => index)
+                          .sort((a, b) => scores[b] - scores[a]);
+    const topScores = sortedIndices.slice(0, 5).map(index => scores[index]);
+    const topTimes = sortedIndices.slice(0, 5).map(index => times[index]);
+
+    localStorage.setItem('gameScores', JSON.stringify(topScores));
+    localStorage.setItem('gameTimes', JSON.stringify(topTimes));
+}
+
+function updateLeaderboard() {
+    const scores = localStorage.getItem('gameScores');
+    const times = localStorage.getItem('gameTimes');
+
+    leaderboard.innerHTML = '';
+
+    const headerRow = document.createElement('tr');
+    const indexHeader = document.createElement('th');
+    indexHeader.textContent = '';
+    const scoreHeader = document.createElement('th');
+    scoreHeader.textContent = 'Score';
+    const timeHeader = document.createElement('th');
+    timeHeader.textContent = 'Time';
+    headerRow.appendChild(indexHeader);
+    headerRow.appendChild(scoreHeader);
+    headerRow.appendChild(timeHeader);
+    leaderboard.appendChild(headerRow);
+
+    // Create table rows for each stored score and time
+    const scoreArray = scores ? JSON.parse(scores) : [];
+    const timeArray = times ? JSON.parse(times) : [];
+    for (let i = 0; i < scoreArray.length; i++) {
+        const row = document.createElement('tr');
+        const indexCell = document.createElement('td');
+        indexCell.textContent = (i + 1).toString();
+        const scoreCell = document.createElement('td');
+        scoreCell.textContent = scoreArray[i];
+        const timeCell = document.createElement('td');
+        timeCell.textContent = timeArray[i];
+        row.appendChild(indexCell);
+        row.appendChild(scoreCell);
+        row.appendChild(timeCell);
+        leaderboard.appendChild(row);
+    }
+}
+
 function endGame(winOrLose) {
     stopTimer();
     let scoreStr = (currentNumber - 1).toString();
@@ -88,6 +149,9 @@ function endGame(winOrLose) {
         gameOverSound.play();
         modalMessage.innerHTML = "Game Over!<br>Score: <b>" + scoreStr + "</b><br>Time: <b>" + timeStr + "</b>";
     }
+
+    storeScore(scoreStr, timeStr);
+    updateLeaderboard();
 
     modal.style.display = 'block';
     gameOver = true;

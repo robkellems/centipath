@@ -110,6 +110,12 @@ h1, h4 {
     text-align: center;
     animation: floatIn 0.5s ease-out;
 }
+.leaderboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:#ee2e31;
+}
 #modal-button {
     margin-top: 15px;
     padding: 10px 20px;
